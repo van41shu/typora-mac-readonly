@@ -1,20 +1,23 @@
 # typora-mac-readonly
 
-独立 macOS Typora Read-Only 插件。安装后可在 Typora for Mac 中通过快捷键切换只读模式。
+[English](README.md) | [中文](README.zh-CN.md)
 
-## 功能
+Standalone read-only plugin for Typora on macOS. After installation, you can toggle read-only mode in Typora for Mac with a keyboard shortcut.
 
-- 文档不可编辑。
-- 可以浏览、滚动、选择、复制、搜索。
-- 进入只读后禁用文档 checkbox 和搜索替换入口。
-- 可配置只读状态下链接单击打开、图片/公式展开控制、右键菜单白名单。
-- 参考 [typora_plugin](https://github.com/obgnail/typora_plugin) 项目实现。
+## Features
 
-## 文件结构
+- Prevents document editing.
+- Keeps browsing, scrolling, selecting, copying, and searching available.
+- Disables document checkboxes and the search-and-replace entry after entering read-only mode.
+- Supports configurable link opening on single click, image/formula expansion control, and context menu allowlists while read-only.
+- Inspired by the [typora_plugin](https://github.com/obgnail/typora_plugin) project.
+
+## Project structure
 
 ```text
 typora-mac-readonly/
   README.md
+  README.zh-CN.md
   install.sh
   uninstall.sh
   src/
@@ -25,69 +28,69 @@ typora-mac-readonly/
     probe.js
 ```
 
-## 安装
+## Installation
 
-默认安装到 `/Applications/Typora.app`：
+Install to `/Applications/Typora.app` by default:
 
 ```bash
 ./install.sh
 ```
 
-也可以显式指定 Typora.app：
+You can also specify `Typora.app` explicitly:
 
 ```bash
 ./install.sh /Applications/Typora.app
 ```
 
-如果脚本提示目标 `index.html` 不可写，按提示使用 sudo 重新执行：
+If the script reports that the target `index.html` is not writable, rerun it with `sudo` as prompted:
 
 ```bash
 sudo ./install.sh /Applications/Typora.app
 ```
 
-安装器会：
+The installer will:
 
-1. 拒绝 Mac App Store 版本 Typora。
-2. 在已知候选路径中查找第一个 `index.html`，优先使用 `Contents/Resources/TypeMark/index.html`。
-3. 把插件文件复制到：
+1. Reject the Mac App Store version of Typora.
+2. Find the first `index.html` from known candidate paths, preferring `Contents/Resources/TypeMark/index.html`.
+3. Copy plugin files to:
 
 ```text
 ~/Library/Application Support/abnerworks.Typora/typora-mac-readonly/readonly.js
 ~/Library/Application Support/abnerworks.Typora/typora-mac-readonly/readonly.css
 ```
 
-4. 备份命中的 `index.html`。
-5. 向 `index.html` 注入本插件的 `file://` CSS 和 JS 标签。
+4. Back up the matched `index.html`.
+5. Inject this plugin's `file://` CSS and JS tags into `index.html`.
 
-重复安装会更新插件文件，但不会重复注入相同标签。
+Repeated installation updates the plugin files without injecting duplicate tags.
 
-## 卸载
+## Uninstallation
 
 ```bash
 ./uninstall.sh /Applications/Typora.app
 ```
 
-默认卸载只移除本插件注入标签和插件文件，不恢复整份备份，避免覆盖其他插件或用户后续改动。
+By default, uninstalling only removes this plugin's injected tags and plugin files. It does not restore the full backup, which avoids overwriting other plugins or later user changes.
 
-如果确认要恢复首次安装前的 `index.html` 备份，可以显式执行：
+If you are sure you want to restore the `index.html` backup from before the first installation, run:
 
 ```bash
 ./uninstall.sh /Applications/Typora.app --restore-backup
 ```
 
-`--restore-backup` 会覆盖当前 `index.html`，可能移除安装本插件之后其他工具写入的改动。
+`--restore-backup` overwrites the current `index.html`, which may remove changes written by other tools after this plugin was installed.
 
-## 使用
+## Usage
 
-重启 Typora 后，使用：
+Restart Typora, then press:
 
 ```text
 Command + R
 ```
 
-切换只读模式。
+This toggles read-only mode.
 
-插件就绪后会暴露调试 API：
+After the plugin is ready, it exposes a debugging API:
 
 ```js
 window.typoraMacReadOnly.status()
@@ -96,9 +99,9 @@ window.typoraMacReadOnly.unlock()
 window.typoraMacReadOnly.toggle()
 ```
 
-## 配置
+## Configuration
 
-配置保存在 Typora 渲染层的 `localStorage`：
+Configuration is stored in Typora renderer `localStorage`:
 
 ```js
 window.typoraMacReadOnly.setConfig({
@@ -107,7 +110,7 @@ window.typoraMacReadOnly.setConfig({
 })
 ```
 
-默认配置：
+Default configuration:
 
 ```js
 {
@@ -123,43 +126,39 @@ window.typoraMacReadOnly.setConfig({
 }
 ```
 
-## 环境探测
+## Environment probing
 
-可在 Typora DevTools 中粘贴执行：
+Paste the contents of `tools/probe.js` into Typora DevTools to inspect the current environment.
 
-```js
-// tools/probe.js
-```
+It reports the Mac Typora capabilities for `File.lock()`, `File.unlock()`, `File.isLocked`, `#write`, the status bar, and context menus.
 
-它会输出当前 Mac Typora 暴露的 `File.lock()`、`File.unlock()`、`File.isLocked`、`#write`、状态栏和右键菜单能力。
+The plugin requires these runtime capabilities:
 
-插件运行时要求：
+- `window.File` exists.
+- `File.lock` is a function.
+- `File.unlock` is a function.
+- `File.isLocked` is readable.
+- The `#write` editor area exists.
 
-- `window.File` 存在。
-- `File.lock` 是函数。
-- `File.unlock` 是函数。
-- `File.isLocked` 可读取。
-- `#write` 编辑区存在。
+If a core capability is missing, the plugin only prints an error and does not enter a pseudo read-only mode.
 
-如果核心能力缺失，插件只打印错误，不进入伪只读模式。
+## Code signing and Gatekeeper risks
 
-## 签名与 Gatekeeper 风险
+The installer modifies `index.html` inside `Typora.app`. This may break Typora's original code signature and cause Gatekeeper warnings such as the app being damaged, unverifiable, or failing to launch with `code signature invalid` errors.
 
-安装脚本会修改 Typora.app 内部的 `index.html`。这可能破坏 Typora 原有代码签名，导致 Gatekeeper 提示应用已损坏、无法验证，或启动时出现 `code signature invalid` 类错误。
-
-优先使用卸载脚本恢复注入改动。如果你确认接受风险并仍要继续使用修改后的非 App Store 版本，可以自行尝试：
+Prefer using the uninstall script to restore the injected changes. If you understand and accept the risk and still want to use the modified non-App-Store version, you can try:
 
 ```bash
 xattr -cr /Applications/Typora.app
 sudo codesign --force --deep -s - /Applications/Typora.app
 ```
 
-安装脚本不会自动执行这些命令。
+The installer never runs these commands automatically.
 
-## 已知限制
+## Known limitations
 
-- 仅支持 macOS Typora 非 App Store 版本。
-- 依赖 Typora 渲染层的 `File.lock()` / `File.unlock()` / `File.isLocked`。
-- 如果 Typora 更新覆盖 `index.html`，需要重新执行安装脚本。
-- 如果 Typora 更新改变资源目录结构，安装器会安全失败并要求反馈版本和资源目录结构。
-- 如果 Typora 使用原生右键菜单或 DOM 结构变化，右键菜单禁用功能会自动降级。
+- Only supports the non-App-Store macOS version of Typora.
+- Depends on Typora renderer APIs: `File.lock()` / `File.unlock()` / `File.isLocked`.
+- If a Typora update overwrites `index.html`, run the installer again.
+- If a Typora update changes the resource directory structure, the installer fails safely and asks you to report the version and resource directory structure.
+- If Typora changes its native context menu or DOM structure, context-menu disabling degrades automatically.
