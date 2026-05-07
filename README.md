@@ -8,7 +8,7 @@
 - 可以浏览、滚动、选择、复制、搜索。
 - 进入只读后禁用文档 checkbox 和搜索替换入口。
 - 可配置只读状态下链接单击打开、图片/公式展开控制、右键菜单白名单。
-- 不依赖 typora_plugin 项目的 BasePlugin、settings、i18n、styleTemplater、right_click_menu 或 preferences。
+- 参考 [typora_plugin](https://github.com/obgnail/typora_plugin) 项目实现。
 
 ## 文件结构
 
