@@ -1,0 +1,42 @@
+body.typora-mac-read-only #footer-word-count-label::before {
+  content: attr(data-typora-mac-read-only-value) !important;
+}
+
+body.typora-mac-read-only #write .md-fences,
+body.typora-mac-read-only #write .md-fences *,
+body.typora-mac-read-only #write .CodeMirror,
+body.typora-mac-read-only #write .CodeMirror * {
+  cursor: default !important;
+  caret-color: transparent !important;
+}
+
+body.typora-mac-read-only #write .CodeMirror-cursor,
+body.typora-mac-read-only #write .CodeMirror-secondarycursor {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+#typora-mac-read-only-badge {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 999999;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.72);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+  user-select: none;
+}
+
+.typora-mac-read-only-disabled-menu {
+  color: rgb(196, 198, 204) !important;
+  pointer-events: none !important;
+}
+
+.typora-mac-read-only-disabled-menu * {
+  pointer-events: none !important;
+}
